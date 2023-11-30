@@ -11,3 +11,12 @@ with open(tasks_file_path, "r") as tasks_file:
 
 with open(builds_file_path, "r") as builds_file:
     builds_data = yaml.safe_load(builds_file)
+
+for task_name, task_data in tasks_data.items():
+    dependencies = task_data.get("dependencies", [])
+    for dependency in dependencies:
+        if dependency not in tasks_data:
+            raise ValueError(f"Invalid dependency in task {task_name}: {dependency}. Task not found.")
+        
+
+# def build_system(data: )
