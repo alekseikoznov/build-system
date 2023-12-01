@@ -1,11 +1,11 @@
-import yaml
 from fastapi.testclient import TestClient
+from yaml import safe_load
 
 from app.main import app
 from app.services.get_tasks import builds_file_path
 
 with open(builds_file_path, "r") as builds_file:
-    builds_data = yaml.safe_load(builds_file)
+    builds_data = safe_load(builds_file)
 
 
 builds = builds_data["builds"]

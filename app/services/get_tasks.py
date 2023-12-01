@@ -1,8 +1,8 @@
 import os
 from typing import Dict, List, Union
 
-import yaml
 from fastapi.responses import JSONResponse
+from yaml import safe_load
 
 from app.schemas.build import Build
 
@@ -12,10 +12,10 @@ builds_file_path = os.path.join(parent_dir, "builds", "builds.yaml")
 tasks_file_path = os.path.join(parent_dir, "builds", "tasks.yaml")
 
 with open(tasks_file_path, "r") as tasks_file:
-    tasks_data = yaml.safe_load(tasks_file)
+    tasks_data = safe_load(tasks_file)
 
 with open(builds_file_path, "r") as builds_file:
-    builds_data = yaml.safe_load(builds_file)
+    builds_data = safe_load(builds_file)
 
 
 def tasks_sort(build_tasks: List[str], all_tasks: List[Dict]) -> List[str]:
