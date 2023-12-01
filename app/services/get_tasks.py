@@ -1,5 +1,7 @@
-import yaml
 import os
+from typing import Dict, List, Union
+
+import yaml
 from fastapi.responses import JSONResponse
 
 from app.schemas.build import Build
@@ -16,7 +18,7 @@ with open(builds_file_path, "r") as builds_file:
     builds_data = yaml.safe_load(builds_file)
 
 
-def tasks_sort(build_tasks, all_tasks):
+def tasks_sort(build_tasks: List[str], all_tasks: List[Dict]) -> List[str]:
     tasks = {}
     for task_data in all_tasks:
         task_name = task_data.get("name")
@@ -25,7 +27,7 @@ def tasks_sort(build_tasks, all_tasks):
     sorted_tasks = []
     visited = set()
 
-    def visit(task_name):
+    def visit(task_name: str) -> None:
         if task_name in visited:
             return
         visited.add(task_name)
@@ -40,13 +42,19 @@ def tasks_sort(build_tasks, all_tasks):
     return sorted_tasks
 
 
-def get_tasks_for_build(build_name: Build):
-    build_name = build_name.dict().get('build')
+def get_tasks_for_build(build_name: Build) -> Union[List[str], JSONResponse]:
+    build_name_str = build_name.dict().get("build")
 
-    selected_build = next((b for b in builds_data["builds"] if b.get("name") == build_name), None)
+    selected_build = next(
+        (b for b in builds_data["builds"] if b.get("name") == build_name_str),
+        None,
+    )
 
     if selected_build is None:
-        return JSONResponse(status_code=404, content={"detail": f"Build {build_name} not found."})
+        return JSONResponse(
+            status_code=404,
+            content={"detail": f"Build {build_name_str} not found."},
+        )
 
     build_tasks = selected_build.get("tasks", [])
     sorted_tasks = tasks_sort(build_tasks, tasks_data.get("tasks", []))
